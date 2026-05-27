@@ -41,6 +41,7 @@ export default function AdminDashboardLayout({
   const { alerts, addAlert, updateAlert } = useEmergencyStore()
   const [unreadCount, setUnreadCount] = useState(0)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     const loadEmergencies = async () => {
@@ -74,10 +75,14 @@ export default function AdminDashboardLayout({
   })
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'admin') {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (mounted && (!isAuthenticated || user?.role !== 'admin')) {
       router.push('/auth/login?role=admin')
     }
-  }, [isAuthenticated, user, router])
+  }, [mounted, isAuthenticated, user, router])
 
   useEffect(() => {
     const handleNotificationCount = (event: CustomEvent<number>) => {
@@ -263,7 +268,16 @@ export default function AdminDashboardLayout({
 
         {/* Page content */}
         <main className="flex-1 p-4 lg:p-6 overflow-auto">
-          {children}
+          {!mounted ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center space-y-4">
+                <div className="w-12 h-12 rounded-full border-4 border-border border-t-primary animate-spin mx-auto" />
+                <p className="text-muted-foreground">Loading dashboard...</p>
+              </div>
+            </div>
+          ) : (
+            children
+          )}
         </main>
 
         <AdminNotificationCenter />

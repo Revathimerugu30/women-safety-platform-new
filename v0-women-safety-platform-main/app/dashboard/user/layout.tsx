@@ -42,6 +42,7 @@ export default function UserDashboardLayout({
   const updateAlert = useEmergencyStore((state) => state.updateAlert)
   const setCurrentAlert = useEmergencyStore((state) => state.setCurrentAlert)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const userId = user?.id ?? null
 
   useRealtimeEvents((event) => {
@@ -78,10 +79,14 @@ export default function UserDashboardLayout({
   })
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'user') {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (mounted && (!isAuthenticated || user?.role !== 'user')) {
       router.push('/auth/login')
     }
-  }, [isAuthenticated, user, router])
+  }, [mounted, isAuthenticated, user, router])
 
   useEffect(() => {
     if (isAuthenticated && user?.role === 'user') {
@@ -286,7 +291,16 @@ export default function UserDashboardLayout({
 
         {/* Page content */}
         <main className="flex-1 p-4 lg:p-6 overflow-auto">
-          {children}
+          {!mounted ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center space-y-4">
+                <div className="w-12 h-12 rounded-full border-4 border-border border-t-primary animate-spin mx-auto" />
+                <p className="text-muted-foreground">Loading dashboard...</p>
+              </div>
+            </div>
+          ) : (
+            children
+          )}
         </main>
 
         {/* Mobile bottom navigation */}

@@ -40,6 +40,7 @@ export default function VolunteerDashboardLayout({
   const { alerts, addAlert, updateAlert } = useEmergencyStore()
   const { addNotification } = useNotificationStore()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     const loadEmergencies = async () => {
@@ -85,10 +86,14 @@ export default function VolunteerDashboardLayout({
   })
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'volunteer') {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (mounted && (!isAuthenticated || user?.role !== 'volunteer')) {
       router.push('/auth/login')
     }
-  }, [isAuthenticated, user, router])
+  }, [mounted, isAuthenticated, user, router])
 
   useEffect(() => {
     if (isAuthenticated && user?.role === 'volunteer') {
@@ -293,7 +298,16 @@ export default function VolunteerDashboardLayout({
 
         {/* Page content */}
         <main className="flex-1 p-4 lg:p-6 overflow-auto">
-          {children}
+          {!mounted ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center space-y-4">
+                <div className="w-12 h-12 rounded-full border-4 border-border border-t-primary animate-spin mx-auto" />
+                <p className="text-muted-foreground">Loading dashboard...</p>
+              </div>
+            </div>
+          ) : (
+            children
+          )}
         </main>
 
         {/* Mobile bottom navigation */}
