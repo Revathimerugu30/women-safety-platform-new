@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "framework": { "name": "nextjs" },
+  "build": {
+    "command": "pnpm build"
+  }
+}

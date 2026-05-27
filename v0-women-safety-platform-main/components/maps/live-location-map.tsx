@@ -511,6 +511,14 @@ export default function LiveLocationMap({
     window.open(url, '_blank')
   }
 
+  const tileLayerUrl =
+    process.env.NEXT_PUBLIC_MAP_API ||
+    'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+
+  const tileLayerAttribution = process.env.NEXT_PUBLIC_MAP_API
+    ? '&copy; Map tiles provided by configured provider'
+    : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+
   return (
     <div className="relative" style={{ height }}>
       {/* Location status overlay */}
@@ -629,8 +637,8 @@ export default function LiveLocationMap({
         >
           {/* Dark theme map tiles */}
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          attribution={tileLayerAttribution}
+          url={tileLayerUrl}
         />
 
         <MapUpdater center={mapCenter} followUser={followUser} />
