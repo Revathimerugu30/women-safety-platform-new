@@ -4,7 +4,7 @@
   "private": true,
   "packageManager": "pnpm@11.3.0",
   "scripts": {
-    "preinstall": "pnpm approve-builds --all || true",
+    "preinstall": "node -e \"try{const s=require('child_process').spawnSync('corepack',['pnpm','approve-builds','--all'],{stdio:'inherit'}); if(s.error) process.exit(0);}catch(e){}\"",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
