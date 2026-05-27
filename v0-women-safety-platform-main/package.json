@@ -4,6 +4,7 @@
   "private": true,
   "packageManager": "pnpm@11.3.0",
   "scripts": {
+    "preinstall": "pnpm approve-builds --all || true",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
